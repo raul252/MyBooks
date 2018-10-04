@@ -10,8 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ItemListActivity"
-            android:label="@string/app_name"
+            android:name=".BookListActivity"
+            android:label="@string/title_pac"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,13 +20,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemDetailActivity"
-            android:label="@string/title_item_detail"
-            android:parentActivityName=".ItemListActivity"
+            android:name=".BookDetailActivity"
+            android:label="@string/title_book_detail"
+            android:parentActivityName=".BookListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cifo.rgonzalezgall.mybooks.ItemListActivity" />
+                android:value="com.cifo.rgonzalezgall.mybooks.BookListActivity" />
         </activity>
     </application>
 
