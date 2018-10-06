@@ -5,4 +5,6 @@
     <dimen name="item_width">200dp</dimen>
     <dimen name="text_margin_left">16dp</dimen>
     <dimen name="text_margin_right">45dp</dimen>
+    <dimen name="card_view_radio">4dp</dimen>
+    <dimen name="card_view_elevacion">2dp</dimen>
 </resources>
