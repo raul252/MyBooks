@@ -94,6 +94,9 @@ public class BookListActivity extends AppCompatActivity {
         private static final int TYPE_ONE = 1;
         private static final int TYPE_TWO = 2;
 
+        /*
+        Method for obtain if the position is odd or couple
+         */
         @Override
         public int getItemViewType(int position) {
             if ((position % 2) == 0) {
@@ -118,6 +121,7 @@ public class BookListActivity extends AppCompatActivity {
                             .replace(R.id.book_detail_container, fragment)
                             .commit();
                 } else {
+                    //Resolution < 900dp
                     Context context = view.getContext();
                     Intent intent = new Intent(context, BookDetailActivity.class);
                     intent.putExtra(BookDetailFragment.ARG_ITEM_ID, item.getIdentificador());
@@ -133,8 +137,10 @@ public class BookListActivity extends AppCompatActivity {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = null;
             if (viewType == TYPE_ONE) {
+                //Layout odd
                 view = inflater.inflate(R.layout.book_list_content, parent, false);
             } else {
+                //Layout couple
                 view = inflater.inflate(R.layout.book_list_content_impar, parent, false);
             }
             return new ViewHolder(view);
@@ -155,6 +161,9 @@ public class BookListActivity extends AppCompatActivity {
         }
 
         // Class ViewHolder
+        /*
+        Class that contains showed data items
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mTituloView;
             final TextView mAutorView;

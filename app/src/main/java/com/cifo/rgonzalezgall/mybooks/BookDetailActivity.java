@@ -30,7 +30,7 @@ public class BookDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Boton de prueba", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -54,7 +54,7 @@ public class BookDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            int valor = getIntent().getIntExtra(BookDetailFragment.ARG_ITEM_ID, -1);
+            //Call to the fragment activity passing data with a Bundle
             arguments.putInt(BookDetailFragment.ARG_ITEM_ID,
                     getIntent().getIntExtra(BookDetailFragment.ARG_ITEM_ID, -1));
             BookDetailFragment fragment = new BookDetailFragment();

@@ -26,14 +26,19 @@ public class Helper {
     private static final int COUNT = 25;
 
     static {
-        // Add some sample items.
+        // Add COUNT sample items.
         for (int i = 1; i <= COUNT; i++) {
             BookItem item = createDummyItem(i);
+            //Add to the List
             ITEMS.add(item);
+            //Add to the map
             ITEM_MAP.put(item.getIdentificador(), item);
         }
     }
 
+    /*
+    Create a BookItem
+     */
     private static BookItem createDummyItem(int position) {
         Date d = new java.util.Date();
         return new BookItem(position, "Titulo" + position, "Autor" + position, d,"Descripcion" + position,
