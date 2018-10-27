@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cifo.rgonzalezgall.mybooks.helper.Helper;
-import com.cifo.rgonzalezgall.mybooks.model.BookItem;
+import com.cifo.rgonzalezgall.mybooks.helper.BookContent;
+import com.cifo.rgonzalezgall.mybooks.helper.BookContent.BookItem;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -51,13 +51,13 @@ public class BookDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = Helper.ITEM_MAP.get(getArguments().getInt(ARG_ITEM_ID));
+            //mItem = BookContent.ITEM_MAP.get(getArguments().getInt(ARG_ITEM_ID));
 
             if (mItem != null) {
                 Activity activity = this.getActivity();
                 CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
                 if (appBarLayout != null) {
-                    appBarLayout.setTitle(mItem.getTitulo());
+                    appBarLayout.setTitle(mItem.getTitle());
                 }
             } else {
                 Context context = this.getContext();
@@ -77,11 +77,11 @@ public class BookDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.textViewAutor)).setText(mItem.getAutor());
+            ((TextView) rootView.findViewById(R.id.textViewAutor)).setText(mItem.getAuthor());
             Format formatter = new SimpleDateFormat("dd/MM/yyyy");
-            String fecha = formatter.format(mItem.getDataPublicacion());
+            String fecha = formatter.format(mItem.getPublication_date());
             ((TextView) rootView.findViewById(R.id.textViewData)).setText(fecha);
-            ((TextView) rootView.findViewById(R.id.textViewDescripcion)).setText(mItem.getDescripcion());
+            ((TextView) rootView.findViewById(R.id.textViewDescripcion)).setText(mItem.getDescription());
         }
 
         return rootView;
