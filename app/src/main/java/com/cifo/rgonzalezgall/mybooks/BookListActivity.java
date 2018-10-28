@@ -1,5 +1,7 @@
 package com.cifo.rgonzalezgall.mybooks;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.cifo.rgonzalezgall.mybooks.helper.BookContent;
+import com.cifo.rgonzalezgall.mybooks.model.BookContent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -176,23 +178,25 @@ public class BookListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 BookContent.BookItem item = (BookContent.BookItem) view.getTag();
-
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putInt(BookDetailFragment.ARG_ITEM_ID,
-//                            item.getIdentificador());
-//                    BookDetailFragment fragment = new BookDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentActivity.getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.book_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    //Resolution < 900dp
-//                    Context context = view.getContext();
-//                    Intent intent = new Intent(context, BookDetailActivity.class);
-//                    intent.putExtra(BookDetailFragment.ARG_ITEM_ID, item.getIdentificador());
-//                    context.startActivity(intent);
-//                }
+                /*I use the identificator but if I insert something in the first position of the database it fails.
+                // But I can use the posititon or getID
+                */
+                Long identificador = item.getId();
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putLong(BookDetailFragment.ARG_ITEM_ID, identificador);
+                    BookDetailFragment fragment = new BookDetailFragment();
+                    fragment.setArguments(arguments);
+                    mParentActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.book_detail_container, fragment)
+                            .commit();
+                } else {
+                    //Resolution < 900dp
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, BookDetailActivity.class);
+                    intent.putExtra(BookDetailFragment.ARG_ITEM_ID, identificador);
+                    context.startActivity(intent);
+                }
             }
         };
 

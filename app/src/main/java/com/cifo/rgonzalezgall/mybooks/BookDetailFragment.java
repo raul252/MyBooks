@@ -9,14 +9,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cifo.rgonzalezgall.mybooks.helper.BookContent;
-import com.cifo.rgonzalezgall.mybooks.helper.BookContent.BookItem;
+import com.cifo.rgonzalezgall.mybooks.model.BookContent;
+import com.cifo.rgonzalezgall.mybooks.model.BookContent.BookItem;
+import com.squareup.picasso.Picasso;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * A fragment representing a single Book detail screen.
@@ -43,6 +44,20 @@ public class BookDetailFragment extends Fragment {
     public BookDetailFragment() {
     }
 
+    /**
+     * Return the book that matches with the position
+     * @param identificador
+     * @return
+     */
+    public BookItem getBook(Long identificador){
+        List<BookItem> books = BookContent.getBooks();
+        for (BookItem book : books) {
+            if (book.getId().equals(identificador)) {
+                return book;
+            }
+        }
+        return null;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +66,8 @@ public class BookDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            //mItem = BookContent.ITEM_MAP.get(getArguments().getInt(ARG_ITEM_ID));
+            Long identificador = getArguments().getLong(ARG_ITEM_ID);
+            mItem = getBook(identificador);
 
             if (mItem != null) {
                 Activity activity = this.getActivity();
@@ -78,10 +94,11 @@ public class BookDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.textViewAutor)).setText(mItem.getAuthor());
-            Format formatter = new SimpleDateFormat("dd/MM/yyyy");
-            String fecha = formatter.format(mItem.getPublication_date());
-            ((TextView) rootView.findViewById(R.id.textViewData)).setText(fecha);
+            ((TextView) rootView.findViewById(R.id.textViewData)).setText(mItem.getPublication_date());
             ((TextView) rootView.findViewById(R.id.textViewDescripcion)).setText(mItem.getDescription());
+            ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
+            String imageUri = mItem.getUrl_image();
+            Picasso.with(getActivity()).load(imageUri).fit().into(imageView);
         }
 
         return rootView;
