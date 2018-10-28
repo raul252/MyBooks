@@ -55,8 +55,9 @@ public class BookDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             //Call to the fragment activity passing data with a Bundle
-            arguments.putLong(BookDetailFragment.ARG_ITEM_ID,
-                    getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, -1));
+            arguments.putInt(BookDetailFragment.ARG_ITEM_ID,
+                    getIntent().getIntExtra(BookDetailFragment.ARG_ITEM_ID, -1));
+            //arguments.putLong(BookDetailFragment.ARG_ITEM_ID,getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, -1));
             BookDetailFragment fragment = new BookDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

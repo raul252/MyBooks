@@ -66,8 +66,10 @@ public class BookDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            Long identificador = getArguments().getLong(ARG_ITEM_ID);
-            mItem = getBook(identificador);
+            //Long identificador = getArguments().getLong(ARG_ITEM_ID);
+            //mItem = getBook(identificador);
+            int posicion = getArguments().getInt(ARG_ITEM_ID);
+            mItem = BookContent.getBooks().get(posicion);
 
             if (mItem != null) {
                 Activity activity = this.getActivity();

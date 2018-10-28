@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -54,6 +55,9 @@ public class BookListActivity extends AppCompatActivity {
     //Login Parameters in Firebase
     private String email = "rgonzalezgall@uoc.edu";
     private String password = "azul01*}";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,7 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
@@ -125,9 +130,22 @@ public class BookListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        View recyclerView = findViewById(R.id.book_list);
+        recyclerView = findViewById(R.id.book_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        // Setup refresh listener which triggers new data loading
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                SimpleItemRecyclerViewAdapter simpleRefrestRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(BookListActivity.this, BookContent.getBooks(), mTwoPane);
+                simpleRefrestRecyclerViewAdapter.setItems(BookContent.getBooks());
+                recyclerView.setAdapter(simpleRefrestRecyclerViewAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -138,7 +156,7 @@ public class BookListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final BookListActivity mParentActivity;
-        private final List<BookContent.BookItem> mValues;
+        private List<BookContent.BookItem> mValues;
         private final boolean mTwoPane;
 
         /*
@@ -152,10 +170,9 @@ public class BookListActivity extends AppCompatActivity {
         }
 
         public void setItems(List<BookContent.BookItem> items) {
-            for (int i = 0; i < items.size(); i++) {
-                //BookContent.BookItem book = items.get(i);
-                //book.save();
-            }
+            mValues.clear();
+            mValues = new ArrayList<>();
+            mValues.addAll(items);
         }
 
         //Private constants
@@ -177,14 +194,16 @@ public class BookListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BookContent.BookItem item = (BookContent.BookItem) view.getTag();
+                //BookContent.BookItem item = (BookContent.BookItem) view.getTag();
+                int position = (int) view.getTag();
                 /*I use the identificator but if I insert something in the first position of the database it fails.
-                // But I can use the posititon or getID
+                // But I can use the position
                 */
-                Long identificador = item.getId();
+                //Long identificador = item.getId();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putLong(BookDetailFragment.ARG_ITEM_ID, identificador);
+                    arguments.putInt(BookDetailFragment.ARG_ITEM_ID, position);
+                    //arguments.putLong(BookDetailFragment.ARG_ITEM_ID, identificador);
                     BookDetailFragment fragment = new BookDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -194,7 +213,8 @@ public class BookListActivity extends AppCompatActivity {
                     //Resolution < 900dp
                     Context context = view.getContext();
                     Intent intent = new Intent(context, BookDetailActivity.class);
-                    intent.putExtra(BookDetailFragment.ARG_ITEM_ID, identificador);
+                    //intent.putExtra(BookDetailFragment.ARG_ITEM_ID, identificador);
+                    intent.putExtra(BookDetailFragment.ARG_ITEM_ID, position);
                     context.startActivity(intent);
                 }
             }
@@ -220,7 +240,8 @@ public class BookListActivity extends AppCompatActivity {
             holder.mTituloView.setText(mValues.get(position).getTitle());
             holder.mAutorView.setText(mValues.get(position).getAuthor());
 
-            holder.itemView.setTag(mValues.get(position));
+            //holder.itemView.setTag(mValues.get(position));
+            holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
