@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "720571757077-j65ivaql702j7fmompi6kh2sb3sokqto.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cifo.rgonzalezgall.mybooks",
+            "certificate_hash": "29e1ba0fea2dfff61c94836f241498f1f061561b"
+          }
+        },
+        {
           "client_id": "720571757077-9njgadl88ift1ni3nb46m5t9j2nb7lgm.apps.googleusercontent.com",
           "client_type": 3
         }

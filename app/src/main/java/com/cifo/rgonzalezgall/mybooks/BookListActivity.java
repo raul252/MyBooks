@@ -1,14 +1,17 @@
 package com.cifo.rgonzalezgall.mybooks;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -59,6 +62,8 @@ public class BookListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    private static final String TAG = "BookListActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +104,6 @@ public class BookListActivity extends AppCompatActivity {
                                 i=i+1;
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             //Error
@@ -110,10 +114,53 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+
+        if (getIntent() != null && getIntent().getAction() != null) {
+            int position = -1;
+            if (getIntent().getAction().equalsIgnoreCase(MyFirebaseMessagingService.ACTION_DELETE)) {
+                // Action delete el libro
+                position = Integer.valueOf(getIntent().getStringExtra(MyFirebaseMessagingService.BOOK_POSITION));
+                Log.d(TAG, "Eliminar el libro "+position);
+                if(position >= BookContent.getBooks().size()){
+                    Toast.makeText(BookListActivity.this, "No se encuentra el libro a eliminar con posición " + position, Toast.LENGTH_LONG).show();
+                }else{
+                    try {
+                        BookContent.BookItem book = BookContent.getBooks().get(position);
+                        if (book == null) {
+                            Toast.makeText(BookListActivity.this, "No se encuentra el libro a eliminar con posición " + position, Toast.LENGTH_LONG).show();
+                        } else {
+                            //Delete a book
+                            book.delete();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(BookListActivity.this, "No se encuentra el libro a eliminar con posición " + position, Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else if (getIntent().getAction().equalsIgnoreCase(MyFirebaseMessagingService.ACTION_VIEW)) {
+               // Ver el detalle del libro
+                position = Integer.valueOf(getIntent().getStringExtra(MyFirebaseMessagingService.BOOK_POSITION));
+                Log.d(TAG, "Ver el libro "+position);
+
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putInt(BookDetailFragment.ARG_ITEM_ID, position);
+                    BookDetailFragment fragment = new BookDetailFragment();
+                    fragment.setArguments(arguments);
+                    FragmentManager manager = getSupportFragmentManager();
+                    manager.beginTransaction()
+                            .replace(R.id.book_detail_container, fragment)
+                            .commit();
+                } else {
+                    //Resolution < 900dp
+                    Intent intent = new Intent(getApplicationContext(), BookDetailActivity.class);
+                    intent.putExtra(BookDetailFragment.ARG_ITEM_ID, position);
+                    startActivity(intent);
+                }
+            }
+         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -264,5 +311,14 @@ public class BookListActivity extends AppCompatActivity {
                 mAutorView = (TextView) view.findViewById(R.id.author);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    // Clear all notification
+        NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nMgr.cancelAll();
     }
 }

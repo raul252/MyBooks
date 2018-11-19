@@ -13,6 +13,11 @@ public class BookContent {
         return BookItem.listAll(BookItem.class);
     }
 
+    /**
+     * Function to check if exist a book
+     * @param bookitem
+     * @return
+     */
     public static boolean exists(BookItem bookitem){
         boolean found = false;
         List<BookItem> book =BookItem.find(BookItem.class, "title = ?", new String(bookitem.getTitle()));
