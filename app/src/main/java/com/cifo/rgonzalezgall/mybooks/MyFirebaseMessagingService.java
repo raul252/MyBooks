@@ -68,14 +68,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Intent que se mostrará al pulsar en la acción de la notificación
         Intent intentDelete = new Intent(this, BookListActivity.class);
         intentDelete.setAction(ACTION_DELETE);
-        intentDelete.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intentDelete.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentDelete.putExtra(BOOK_POSITION, posicion);
         PendingIntent pendingIntentDelete = PendingIntent.getActivity(this, 0, intentDelete,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Intent intentView = new Intent(this, BookListActivity.class);
         intentView.setAction(ACTION_VIEW);
-        intentView.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intentView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentView.putExtra(BOOK_POSITION, posicion);
         PendingIntent pendingIntentView = PendingIntent.getActivity(this, 0, intentView,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -96,10 +96,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                    "Canal",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannel notificationChannel = notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID);
+            if (notificationChannel == null) {
+                notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                        "Canal",
+                        NotificationManager.IMPORTANCE_HIGH);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
         }
         notificationManager.notify(0, mBuilder.build());
     }
