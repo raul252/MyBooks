@@ -32,6 +32,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 /**
  * An activity representing a list of Books. This activity
@@ -193,6 +203,59 @@ public class BookListActivity extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        //Menu lateral
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.share);
+        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName(R.string.copy);
+        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(3).withName(R.string.whatsapp);
+
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.ic_launcher_background)
+                .addProfiles(
+                        new ProfileDrawerItem().withName("Raul gonzalez").withEmail("raul@gmail.com").withIcon(getResources().getDrawable(R.drawable.ic_user))
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        return false;
+                    }
+                })
+                .build();
+
+        //create the drawer and remember the `Drawer` result object
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(headerResult)
+                .addDrawerItems(
+                        item1,
+                        new DividerDrawerItem(),
+                        item2,
+                        new DividerDrawerItem(),
+                        item3
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        // do something with the clicked item :D
+                        int opcion = ((Number)drawerItem.getIdentifier()).intValue();
+                        switch (opcion)
+                        {
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                        }
+                        return true;
+                    }
+                })
+                .build();
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

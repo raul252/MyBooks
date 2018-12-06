@@ -4,4 +4,7 @@
     <string name="title_book_list">Books</string>
     <string name="title_pac">PAC1</string>
     <string name="title_book_detail">Book Detail</string>
+    <string name="share">Compartir amb altres aplicacions</string>
+    <string name="copy">Copiar al portapapers</string>
+    <string name="whatsapp">compartir amb whatsupp</string>
 </resources>
