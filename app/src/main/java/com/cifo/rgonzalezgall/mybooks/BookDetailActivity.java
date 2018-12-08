@@ -1,6 +1,7 @@
 package com.cifo.rgonzalezgall.mybooks;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  * An activity representing a single Book detail screen. This
@@ -18,7 +22,7 @@ import android.view.MenuItem;
  * in a {@link BookListActivity}.
  */
 public class BookDetailActivity extends AppCompatActivity {
-
+    private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +30,54 @@ public class BookDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Boton de prueba", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Boton de prueba", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                WebView webview = (WebView)findViewById(R.id.webview);
+                webview.setVisibility(View.VISIBLE);
+                webview.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
+                        boolean correcto = false;
+                        String error = "";
+                        Uri uri = Uri.parse(urlNewString);
+                        String name = uri.getQueryParameter("name");
+                        String num = uri.getQueryParameter("num");
+                        String date = uri.getQueryParameter("date");
+
+                        if (name != null && !name.trim().isEmpty()) {
+                            //Correcto
+                        } else {
+                            error = "Falta el nombre.";
+                        }
+                        if (num != null && !num.trim().isEmpty()) {
+                            //Correcto
+                        } else {
+                            error += "Falta el número de tarjeta.";
+                        }
+                        if (date != null && !date.trim().isEmpty()) {
+                            //Correcto
+                        } else {
+                            error += "Falta la fecha de caducidad.";
+                        }
+
+                        if (error == "") {
+                            view.setVisibility(View.GONE);
+                            fab.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(),  "Compra correcta", Toast.LENGTH_LONG).show();
+                            return true;
+                        } else {
+                            Toast.makeText(getApplicationContext(),  "Errores: "+error, Toast.LENGTH_LONG).show();
+                        }
+                        return correcto;
+                    }
+                });
+                webview.loadUrl("file:///android_asset/form.html");
+                webview.requestFocus();
+                fab.setVisibility(View.GONE);
             }
         });
 

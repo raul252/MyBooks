@@ -294,11 +294,11 @@ public class BookListActivity extends AppCompatActivity {
      * @return Intent
      */
     private Intent share(){
-        Uri imatgeAEnviar = prepareImage();
+        Uri sendImage = prepareImage();
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.text));
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imatgeAEnviar);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, sendImage);
         shareIntent.setType("image/jpeg");
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             shareIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -310,7 +310,6 @@ public class BookListActivity extends AppCompatActivity {
      * Method for sharing text and image of a book
      */
     private void shareBook() {
-        Uri imatgeAEnviar = prepareImage();
         Intent shareIntent = share();
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
     }
