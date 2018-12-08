@@ -1,11 +1,19 @@
 package com.cifo.rgonzalezgall.mybooks;
 
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +22,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,11 +215,12 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
 
-        //Menu lateral
+        //Items del menu lateral
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.share);
         SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName(R.string.copy);
-        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(3).withName(R.string.whatsapp);
+        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(3).withName(R.string.whatsApp);
 
+        //Part del menu lateral amb el header
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.ic_launcher_background)
@@ -238,24 +250,96 @@ public class BookListActivity extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
+                        // do something based on item clicked
                         int opcion = ((Number)drawerItem.getIdentifier()).intValue();
                         switch (opcion)
                         {
                             case 1:
+                                shareBook();
                                 break;
                             case 2:
+                                copyClipBoard();
                                 break;
                             case 3:
-                                break;
-                            case 4:
+                                shareWhatsApp();
                                 break;
                         }
                         return true;
                     }
                 })
                 .build();
+    }
 
+    /**
+     * Method for sharing context in whatsApp
+     */
+    private void shareWhatsApp() {
+        Intent shareIntent = share();
+        shareIntent.setPackage("com.whatsApp");
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.whatsApp)));
+    }
+
+    /**
+     * Method for copying in the clickboard
+     */
+    private void copyClipBoard() {
+        ClipboardManager clipBoard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("MyBooks", getString(R.string.text));
+        clipBoard.setPrimaryClip(clipData);
+        Toast.makeText(this,  getString(R.string.clipBoard), Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     *
+     * @return Intent
+     */
+    private Intent share(){
+        Uri imatgeAEnviar = prepareImage();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.text));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imatgeAEnviar);
+        shareIntent.setType("image/jpeg");
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+            shareIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        return shareIntent;
+    }
+
+    /**
+     * Method for sharing text and image of a book
+     */
+    private void shareBook() {
+        Uri imatgeAEnviar = prepareImage();
+        Intent shareIntent = share();
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
+    }
+
+    /**
+     * Prepare and save image
+     * @return Uri
+     */
+    private Uri prepareImage() {
+        Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        File imagePath = new File(getFilesDir(), "temporal");
+        imagePath.mkdir();
+        File imageFile = new File(imagePath.getPath(), "app_icon.png");
+
+        try {
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return FileProvider.getUriForFile(getApplicationContext(), getPackageName(), imageFile);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

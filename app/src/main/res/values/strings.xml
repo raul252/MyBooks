@@ -6,5 +6,7 @@
     <string name="title_book_detail">Book Detail</string>
     <string name="share">Compartir amb altres aplicacions</string>
     <string name="copy">Copiar al portapapers</string>
-    <string name="whatsapp">compartir amb whatsupp</string>
+    <string name="whatsApp">compartir amb whatsupp</string>
+    <string name="text">Aplicació Android sobre llibres</string>
+    <string name="clipBoard">Texto copiado en el portapapeles</string>
 </resources>
